@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Book;
 import com.example.demo.service.BookService;
+import com.example.demo.dto.*;
 
 /* @RestController
 @RequestMapping("/api/books")
@@ -48,6 +49,7 @@ public class BookController {
 
 @RestController
 @RequestMapping("/api/books")
+@io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth")
 public class BookController {
 
     private static final Logger logger = LoggerFactory.getLogger(BookController.class);
@@ -59,12 +61,11 @@ public class BookController {
     }
 
     // Create a new book
-    @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public Book createBook(@RequestBody Book book) {
-      logger.info("Creating book: {}", book.getTitle());
-        Book savedBook = bookService.save(book);
+    public Book createBook(@RequestBody BookRequest book) {
+      logger.info("Creating book: {}", book.title);
+        Book savedBook = bookService.save(book.title,book.author,book.price);
         logger.info("Book created successfully with ID: {}", savedBook.getId());
         return savedBook;
     }

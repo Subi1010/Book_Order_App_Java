@@ -72,7 +72,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 // Create authentication token
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
+                                userDetails, null, userDetails.getAuthorities()); //from type UserDetails in spring security only we have getPrincipal, getAuthorirties functions, roles as a string is different from having roles as authorities in spring( which helps in automatic authorization from the role specified in the api, @PreAuthorize etc)
 
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request));

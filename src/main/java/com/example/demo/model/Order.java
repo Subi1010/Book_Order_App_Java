@@ -16,13 +16,12 @@ public class Order {
 private String id;
 private String bookId;
 private int quantity;
-private String customerName;
+private String userId;
 private LocalDateTime orderDate;
 
-public Order(String bookId, int quantity, String customerName) {
+public Order(String bookId, int quantity) {
     this.bookId = bookId;
     this.quantity = quantity;
-    this.customerName = customerName;
     this.orderDate = LocalDateTime.now();
 }
 }

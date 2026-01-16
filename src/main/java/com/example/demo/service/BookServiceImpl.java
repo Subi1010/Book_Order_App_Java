@@ -23,10 +23,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book save(Book book) {
+    public Book save(String title, String author, int price) {
         // Any pre-save business logic can go here
-        logger.info("Saving book: {}", book.getTitle());
-        book.setQuantity(1); // If the field is ignored and no default given, for int it will be 0 (which will be saved in MongoDB) and for objects null which will not be saved in MongoDB
+        logger.info("Saving book: {}", title);
+        //book.setQuantity(1); // If the field is ignored and no default given, for int it will be 0 (which will be saved in MongoDB) and for objects null which will not be saved in MongoDB
+        Book book = new Book(title,author,price);
         Book savedBook = bookRepository.save(book);
         logger.info("Book saved successfully with ID: {}", savedBook.getId());
         return savedBook;

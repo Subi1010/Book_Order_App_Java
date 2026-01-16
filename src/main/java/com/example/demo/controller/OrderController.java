@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.OrderRequest;
 import com.example.demo.model.Order;
 import com.example.demo.service.OrderService;
 
 @RestController
 @RequestMapping("/api/orders")
+@io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "bearerAuth")
 public class OrderController {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
@@ -29,16 +31,16 @@ public class OrderController {
     }
 
   @PostMapping
-  public ResponseEntity<Order> placeOrder(@RequestBody Order order) {
+  public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest order) {
   logger.info("Placing order for book ID: {}, quantity: {}, customer: {}",
-              order.getBookId(), order.getQuantity(), order.getCustomerName());
+              order.bookId, order.quantity);
   try {
-            Order newOrder = orderService.placeOrder(order.getBookId(), order.getQuantity(), order.getCustomerName());
+            Order newOrder = orderService.placeOrder(order.bookId, order.quantity);
             logger.info("Order placed successfully with ID: {}", newOrder.getId());
             return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             logger.error("Failed to place order: {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); //TODO: handle bookId not found error
         }
 }
 

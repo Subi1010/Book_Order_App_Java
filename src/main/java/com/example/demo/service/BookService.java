@@ -7,7 +7,7 @@ import java.util.Optional;
 import com.example.demo.model.Book;
 
 public interface BookService {
-    Book save(Book book);
+    Book save(String title, String author, int price);
     List<Book> findAll();
     Optional<Book> findById(String id);
 }

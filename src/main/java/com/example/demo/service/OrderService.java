@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.example.demo.model.Order;
 
 public interface OrderService {
-Order placeOrder(String bookId, int quantity, String customerName);
+Order placeOrder(String bookId, int quantity);
 List<Order> getAllOrders();
 Optional<Order> getOrderById(String id);
 }

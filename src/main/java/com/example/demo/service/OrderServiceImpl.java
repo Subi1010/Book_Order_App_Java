@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.model.Order;
 import com.example.demo.repository.OrderRepository;
+import com.example.demo.security.SecurityUtil;
 
 @Service
 public class OrderServiceImpl implements  OrderService {
@@ -17,17 +18,19 @@ public class OrderServiceImpl implements  OrderService {
   private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
   private final OrderRepository orderRepository;
   private final BookService bookService;
+  private final SecurityUtil securityUtil;
 
   @Autowired
-  public OrderServiceImpl(OrderRepository orderRepository, BookService bookService) {
+  public OrderServiceImpl(OrderRepository orderRepository, BookService bookService, SecurityUtil securityUtil) {
       this.orderRepository = orderRepository;
       this.bookService = bookService;
+      this.securityUtil = securityUtil;
   }
 
   @Override
-  public Order placeOrder(String bookId, int quantity, String customerName) {
+  public Order placeOrder(String bookId, int quantity) {
       // Check if the book exists
-      logger.info("Placing order for book ID: {}, quantity: {}, customer: {}", bookId, quantity, customerName);
+      logger.info("Placing order for book ID: {}, quantity: {}, customer: {}", bookId, quantity);
       var bookOpt = bookService.findById(bookId);
       if (bookOpt.isEmpty()) {
           logger.error("Failed to place order - Book with ID {} does not exist", bookId);
@@ -35,7 +38,9 @@ public class OrderServiceImpl implements  OrderService {
       }
 
       // Create and save the order
-      Order order = new Order(bookId, quantity, customerName);
+      Order order = new Order(bookId, quantity);
+      String userId= securityUtil.getCurrentUserId();
+      order.setUserId(userId);
       Order savedOrder = orderRepository.save(order);
       logger.info("Order placed successfully with ID: {}", savedOrder.getId());
       return savedOrder;
@@ -44,7 +49,8 @@ public class OrderServiceImpl implements  OrderService {
   @Override
   public List<Order> getAllOrders() {
       logger.debug("Fetching all orders from repository");
-      List<Order> orders = orderRepository.findAll();
+      String userId = securityUtil.getCurrentUserId();
+      List<Order> orders = orderRepository.findByUserId(userId);
       logger.debug("Found {} orders", orders.size());
       return orders;
   }

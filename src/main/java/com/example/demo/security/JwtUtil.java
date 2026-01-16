@@ -34,7 +34,6 @@ public class JwtUtil {
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(a -> a.getAuthority())
                 .toList());
-
         String token = createToken(claims, userDetails.getUsername());
         logger.debug("JWT token generated successfully for user: {}", userDetails.getUsername());
         return token;
