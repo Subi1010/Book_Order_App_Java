@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.OrderRequest;
+import com.example.demo.dto.PaymentResponse;
 import com.example.demo.model.Order;
 import com.example.demo.service.OrderService;
 
@@ -43,6 +44,12 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST); //TODO: handle bookId not found error
         }
 }
+
+@PostMapping("/{orderId}/pay")
+  public ResponseEntity<PaymentResponse> pay(@PathVariable String orderId) {
+    PaymentResponse response = orderService.initiatePayment(orderId);
+    return ResponseEntity.ok(response);
+    }
 
 @GetMapping
   public List<Order> getAllOrders() {

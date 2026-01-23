@@ -23,6 +23,8 @@ public class Book {
     }
 } */
 
+import java.math.BigDecimal;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -37,9 +39,9 @@ public class Book {
     private String id;
     private String title;
     private String author;
-    private int price;
+    private BigDecimal price;
 
-    public Book(String title, String author, int price) {
+    public Book(String title, String author, BigDecimal price) {
         this.title = title;
         this.author = author;
         this.price = price;

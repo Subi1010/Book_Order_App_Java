@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book save(String title, String author, int price) {
+    public Book save(String title, String author, BigDecimal price) {
         // Any pre-save business logic can go here
         logger.info("Saving book: {}", title);
         //book.setQuantity(1); // If the field is ignored and no default given, for int it will be 0 (which will be saved in MongoDB) and for objects null which will not be saved in MongoDB

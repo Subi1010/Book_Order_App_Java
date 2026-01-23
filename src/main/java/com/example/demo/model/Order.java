@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
@@ -20,6 +21,7 @@ private String bookId;
 private int quantity;
 private String userId;
 private OrderStatus status;
+private BigDecimal totalAmount;
 private LocalDateTime orderDate;
 
 public Order(String bookId, int quantity) {
