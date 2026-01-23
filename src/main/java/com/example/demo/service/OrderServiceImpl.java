@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.config.OrderStatus;
 import com.example.demo.model.Order;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.security.SecurityUtil;
@@ -41,6 +42,7 @@ public class OrderServiceImpl implements  OrderService {
       Order order = new Order(bookId, quantity);
       String userId= securityUtil.getCurrentUserId();
       order.setUserId(userId);
+      order.setStatus(OrderStatus.PENDING);
       Order savedOrder = orderRepository.save(order);
       logger.info("Order placed successfully with ID: {}", savedOrder.getId());
       return savedOrder;
