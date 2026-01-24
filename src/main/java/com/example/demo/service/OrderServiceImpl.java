@@ -37,7 +37,7 @@ public class OrderServiceImpl implements  OrderService {
   public Order placeOrder(String bookId, int quantity) {
       // Check if the book exists
       logger.info("Placing order for book ID: {}, quantity: {}, customer: {}", bookId, quantity);
-      var bookOpt = bookService.findById(bookId);
+      var bookOpt = bookService.findById(bookId); //Either contains a Book Or contains nothing, Optional is used to handle both the cases so it avoids the default exception thrown if the row or data doesn't exist in the db
       if (bookOpt.isEmpty()) {
           logger.error("Failed to place order - Book with ID {} does not exist", bookId);
           throw new IllegalArgumentException("Book with ID " + bookId + " does not exist.");
@@ -66,6 +66,11 @@ public class OrderServiceImpl implements  OrderService {
       Order order = orderRepository.findById(orderId)
               .orElseThrow(() -> new RuntimeException("Order not found"));
       logger.debug("here");
+
+      //order.setPaymentId(payment.getPaymentId()); TODO: Should add the payment ID
+      order.setStatus(OrderStatus.PAYMENT_INITIATED);
+
+      orderRepository.save(order);
       return paymentService.initiatePayment(order);
   }
 
