@@ -55,4 +55,9 @@ public class BookServiceImpl implements BookService {
         }
         return book;
     }
+
+    @Override
+    public List<Book> findAllByIds(List<String> ids) {
+      return bookRepository.findAllById(ids);
+  }
 }

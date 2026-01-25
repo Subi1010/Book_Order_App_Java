@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,16 +18,14 @@ import lombok.NoArgsConstructor;
 public class Order {
 @Id
 private String id;
-private String bookId;
-private int quantity;
+private List<OrderItem> items;
 private String userId;
 private OrderStatus status;
 private BigDecimal totalAmount;
 private LocalDateTime orderDate;
 
-public Order(String bookId, int quantity) {
-    this.bookId = bookId;
-    this.quantity = quantity;
+public Order(List<OrderItem> items) {
+    this.items = items;
     this.orderDate = LocalDateTime.now();
 }
 }

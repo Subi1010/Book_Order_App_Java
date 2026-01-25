@@ -1,7 +1,9 @@
 package com.example.demo.dto;
 
-public class OrderRequest {
-  public String bookId;
-  public int quantity;
+import java.util.List;
 
+import com.example.demo.model.OrderItem;
+
+public class OrderRequest {
+  public List<OrderItem> items;
 }

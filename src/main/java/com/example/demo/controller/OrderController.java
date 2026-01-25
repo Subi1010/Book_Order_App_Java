@@ -33,10 +33,9 @@ public class OrderController {
 
   @PostMapping
   public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest order) {
-  logger.info("Placing order for book ID: {}, quantity: {}, customer: {}",
-              order.bookId, order.quantity);
+  logger.info("Placing order for book items: {}",order.items);
   try {
-            Order newOrder = orderService.placeOrder(order.bookId, order.quantity);
+            Order newOrder = orderService.placeOrder(order.items);
             logger.info("Order placed successfully with ID: {}", newOrder.getId());
             return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {

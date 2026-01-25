@@ -2,7 +2,10 @@ package com.example.demo.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +16,7 @@ import com.example.demo.config.OrderStatus;
 import com.example.demo.dto.PaymentResponse;
 import com.example.demo.model.Book;
 import com.example.demo.model.Order;
+import com.example.demo.model.OrderItem;
 import com.example.demo.repository.OrderRepository;
 import com.example.demo.security.SecurityUtil;
 
@@ -34,8 +38,9 @@ public class OrderServiceImpl implements  OrderService {
   }
 
   @Override
-  public Order placeOrder(String bookId, int quantity) {
-      // Check if the book exists
+  public Order placeOrder(List<OrderItem> items) {
+     /*  Appraoch 1: Saving a single book order
+     // Check if the book exists
       logger.info("Placing order for book ID: {}, quantity: {}, customer: {}", bookId, quantity);
       var bookOpt = bookService.findById(bookId); //Either contains a Book Or contains nothing, Optional is used to handle both the cases so it avoids the default exception thrown if the row or data doesn't exist in the db
       if (bookOpt.isEmpty()) {
@@ -57,8 +62,83 @@ public class OrderServiceImpl implements  OrderService {
       order.setStatus(OrderStatus.PENDING);
       Order savedOrder = orderRepository.save(order);
       logger.info("Order placed successfully with ID: {}", savedOrder.getId());
-      return savedOrder;
+      return savedOrder; */
+
+    /* Approach 2: If the books are sent as list with common quantity
+    // Fetch all books
+    List<Book> books = bookService.findAllByIds(bookIds);
+
+    // Validation: some books not found
+    if (books.size() != bookIds.size()) {
+        logger.error("Some books not found. Requested: {}, Found: {}",
+                  bookIds.size(), books.size());
+        throw new IllegalArgumentException("One or more books do not exist");
     }
+
+    // Calculate total amount
+    BigDecimal totalAmount = books.stream()
+            .map(Book::getPrice)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .multiply(BigDecimal.valueOf(quantity));
+
+    // Create order
+    Order order = new Order();
+    order.setBookIds(bookIds);
+    order.setQuantity(quantity);
+    order.setTotalAmount(totalAmount);
+    order.setStatus(OrderStatus.PENDING);
+
+    String userId = securityUtil.getCurrentUserId();
+    order.setUserId(userId);
+
+    Order savedOrder = orderRepository.save(order);
+
+    logger.info("Order placed successfully with ID: {}", savedOrder.getId());
+    return savedOrder; */
+
+    //Approach 3
+    logger.info("Placing order with items: {}", items);
+
+    // Extract bookIds
+    List<String> bookIds = items.stream()
+            .map(OrderItem::getBookId)
+            .toList();
+
+    // Fetch books from DB
+    List<Book> books = bookService.findAllByIds(bookIds);
+
+    if (books.size() != bookIds.size()) {
+        throw new IllegalArgumentException("One or more books do not exist");
+    }
+
+    // Map bookId -> Book : To get the price of each book
+    Map<String, Book> bookMap = books.stream()
+            .collect(Collectors.toMap(Book::getId, Function.identity())); //Collectors.toMap(keyMapper, valueMapper) --> (Book.getId, Book)
+
+    // Calculate total
+    BigDecimal totalAmount = BigDecimal.ZERO;
+
+    for (OrderItem item : items) {
+        Book book = bookMap.get(item.getBookId());
+
+        BigDecimal itemTotal =
+                book.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+
+        totalAmount = totalAmount.add(itemTotal);
+    }
+
+    // Create order
+    Order order = new Order();
+    order.setItems(items);
+    order.setTotalAmount(totalAmount);
+    order.setStatus(OrderStatus.PENDING);
+    order.setUserId(securityUtil.getCurrentUserId());
+
+    Order savedOrder = orderRepository.save(order);
+
+    logger.info("Order placed successfully with ID: {}", savedOrder.getId());
+    return savedOrder;
+}
 
     @Override
     public PaymentResponse initiatePayment(String orderId) {

@@ -11,4 +11,5 @@ public interface BookService {
     Book save(String title, String author, BigDecimal price);
     List<Book> findAll();
     Optional<Book> findById(String id);
+    List<Book> findAllByIds(List<String> ids);
 }
