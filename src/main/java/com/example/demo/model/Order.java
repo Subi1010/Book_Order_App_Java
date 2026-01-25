@@ -22,6 +22,7 @@ private List<OrderItem> items;
 private String userId;
 private OrderStatus status;
 private BigDecimal totalAmount;
+private String paymentId;
 private LocalDateTime orderDate;
 
 public Order(List<OrderItem> items) {

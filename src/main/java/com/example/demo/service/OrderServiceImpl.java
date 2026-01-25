@@ -39,7 +39,9 @@ public class OrderServiceImpl implements  OrderService {
 
   @Override
   public Order placeOrder(List<OrderItem> items) {
-     /*  Appraoch 1: Saving a single book order
+    //Book book = bookService.findById("1").orElseThrow(() -> new RuntimeException("Order not found")); // if using Optional<> type always wrap it with an exceptional handler, then we can access the type returned directly instead of using var as below
+
+    /*  Appraoch 1: Saving a single book order
      // Check if the book exists
       logger.info("Placing order for book ID: {}, quantity: {}, customer: {}", bookId, quantity);
       var bookOpt = bookService.findById(bookId); //Either contains a Book Or contains nothing, Optional is used to handle both the cases so it avoids the default exception thrown if the row or data doesn't exist in the db
