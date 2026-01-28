@@ -122,6 +122,7 @@ public class OrderServiceImpl implements  OrderService {
 
     for (OrderItem item : items) {
         Book book = bookMap.get(item.getBookId());
+        item.setPrice(book.getPrice());
 
         BigDecimal itemTotal =
                 book.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
@@ -130,8 +131,8 @@ public class OrderServiceImpl implements  OrderService {
     }
 
     // Create order
-    Order order = new Order();
-    order.setItems(items);
+    Order order = new Order(items);
+    //order.setItems(items);
     order.setTotalAmount(totalAmount);
     order.setStatus(OrderStatus.PENDING);
     order.setUserId(securityUtil.getCurrentUserId());
